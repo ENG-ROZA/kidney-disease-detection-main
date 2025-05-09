@@ -20,126 +20,136 @@ class _ArticlesDetailsState extends State<ArticlesDetails> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Get article ID from navigation arguments
     articleId = ModalRoute.of(context)?.settings.arguments as String;
     _articlesDetailsFuture = ApiManager.getArticlesDetails(articleId);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
-        appBar: AppBar(
-             surfaceTintColor: Colors.transparent,
-        scrolledUnderElevation: 0.0,
-          title: Text(
-            "Articles Details",
-            style: GoogleFonts.poppins(
-              color: Colors.black,
-              fontWeight: FontWeight.w600,
-              fontSize: 20,
-            ),
-          ),
-          automaticallyImplyLeading: true,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              size: 20,
-            ),
-            color: Colors.black,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          elevation: 0.0,
-        ),
-        body: FutureBuilder(
-          future: _articlesDetailsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                  child: CircularProgressIndicator(
-                color: primaryColor,
-                strokeCap: StrokeCap.round,
-                strokeWidth: 6,
-              ));
-            } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
-            }
-            if (snapshot.hasData && snapshot.data?.article == null) {
-              return const Center(child: Text('Article not found'));
-            }
-            final article = snapshot.data!.article;
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
 
-            return SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    alignment: Alignment.bottomLeft,
-                    children: [
-                      flutter_image.Image.network(
-                        article.image.url,
-                        width: double.infinity,
-                        height: 300,
-                        fit: BoxFit.cover,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(article.title,
-                                style: GoogleFonts.merriweather(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.black,
-                                )),
-                            Text(article.createdAt.substring(0, 10),
-                                style: GoogleFonts.merriweather(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.black,
-                                )),
-                            const SizedBox(
-                              height: 30,
-                            ),
-                          ],
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        surfaceTintColor: Colors.transparent,
+        scrolledUnderElevation: 0.0,
+        automaticallyImplyLeading: true,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, size: 20),
+          color: Colors.black,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        elevation: 0.0,
+        title: Text(
+          "Articles Details",
+          style: GoogleFonts.poppins(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: screenHeight * 0.025,
+          ),
+        ),
+      ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return FutureBuilder(
+            future: _articlesDetailsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    color: primaryColor,
+                    strokeCap: StrokeCap.round,
+                    strokeWidth: 6,
+                  ),
+                );
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              }
+              if (snapshot.hasData && snapshot.data?.article == null) {
+                return const Center(child: Text('Article not found'));
+              }
+
+              final article = snapshot.data!.article;
+              return SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      alignment: Alignment.bottomLeft,
+                      children: [
+                        flutter_image.Image.network(
+                          article.image.url,
+                          width: double.infinity,
+                          height: screenHeight * 0.3,
+                          fit: BoxFit.cover,
                         ),
-                      ),
-                      Container(
-                        width: double.infinity,
-                        height: 10,
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(25.0),
-                            topRight: Radius.circular(25.0),
+                        Positioned(
+                          bottom: screenHeight * 0.01,
+                          left: screenWidth * 0.04,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                article.title,
+                                style: GoogleFonts.merriweather(
+                                  fontSize: screenHeight * 0.022,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              Text(
+                                article.createdAt.substring(0, 10),
+                                style: GoogleFonts.merriweather(
+                                  fontSize: screenHeight * 0.016,
+                                  fontWeight: FontWeight.normal,
+                                  color: Colors.white,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                      )
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        Text(
-                          article.content,
-                          style: GoogleFonts.crimsonText(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black.withOpacity(0.6),
+                        Positioned(
+                          bottom: 0,
+                          child: Container(
+                            width: double.infinity,
+                            height: screenHeight * 0.015,
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25.0),
+                                topRight: Radius.circular(25.0),
+                              ),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            );
-          },
-        ));
+                    Padding(
+                      padding: EdgeInsets.all(screenWidth * 0.04),
+                      child: Column(
+                        children: [
+                          Text(
+                            article.content,
+                            style: GoogleFonts.crimsonText(
+                              fontSize: screenHeight * 0.018,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.black.withOpacity(0.6),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }

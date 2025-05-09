@@ -233,11 +233,11 @@ class _ScanScreenState extends State<ScanScreen> {
                             physics: const BouncingScrollPhysics(),
                             itemBuilder: (context, index) => GestureDetector(
                               onTap: () {
-                                // Navigator.pushNamed(
-                                //   context,
-                                //   ScanDetails.routeName,
-                                //   arguments: recentScanResult[index].scanId,
-                                // );
+                                Navigator.pushNamed(
+                                  context,
+                                  ScanDetails.routeName,
+                                  arguments: recentScanResult[index].scanId,
+                                );
                               },
                               child: buildRecentScanWidget(
                                 context,

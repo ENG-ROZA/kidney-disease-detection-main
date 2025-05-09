@@ -22,10 +22,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  double getResponsiveFontSize(BuildContext context, double baseSize) {
+  double getResponsiveFontSize(double baseSize) {
     double screenWidth = MediaQuery.of(context).size.width;
-    return baseSize *
-        (screenWidth / 414); //* 414 is a reference width (iPhone 12 Pro Max)
+    return baseSize * (screenWidth / 414); // iPhone 12 Pro Max as reference
   }
 
   late Future<TopRatedDoctors> _doctorsFuture;
@@ -38,45 +37,53 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
-    double screenWidth = MediaQuery.of(context).size.width;
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
     String token = CachedData.getFromCache("token");
-    Widget buildLeadingWidget(BuildContext context,
-        {required String userName,
-        required String userEmail,
-        required String userImage}) {
+
+    Widget buildLeadingWidget({
+      required String userName,
+      required String userEmail,
+      required String userImage,
+    }) {
       return Padding(
-        padding: const EdgeInsets.only(
-          top: 9,
-          bottom: 7,
-          left: 5,
+        padding: EdgeInsets.only(
+          top: screenHeight * 0.01,
+          bottom: screenHeight * 0.007,
+          left: screenWidth * 0.015,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             CircleAvatar(
-              radius: 26,
-              backgroundImage: NetworkImage(userImage,scale: 6),
+              radius: screenHeight * 0.03,
+              backgroundImage: NetworkImage(userImage, scale: 6),
             ),
-            const SizedBox(
-              width: 2,
-            ),
+            SizedBox(width: screenWidth * 0.01),
             Column(
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(userName,
-                    style: GoogleFonts.crimsonText(
-                        fontWeight: FontWeight.w700,
-                        fontSize: getResponsiveFontSize(context, 10),
-                        color: Colors.white)),
-                Text(userEmail.substring(0, userEmail.indexOf("@")),
-                    style: GoogleFonts.crimsonText(
-                        fontWeight: FontWeight.w400,
-                        fontSize: getResponsiveFontSize(context, 8),
-                        color: const Color(0xFFD2D2D2)))
+                Text(
+                  userName,
+                  style: GoogleFonts.crimsonText(
+                    fontWeight: FontWeight.w700,
+                    fontSize: getResponsiveFontSize(10),
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  userEmail.substring(0, userEmail.indexOf("@")),
+                  style: GoogleFonts.crimsonText(
+                    fontWeight: FontWeight.w400,
+                    fontSize: getResponsiveFontSize(8),
+                    color: const Color(0xFFD2D2D2),
+                  ),
+                ),
               ],
-            )
+            ),
           ],
         ),
       );
@@ -84,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     Widget homeButton() {
       return Padding(
-        padding: const EdgeInsets.all(8.0),
+        padding: EdgeInsets.all(screenWidth * 0.02),
         child: InkWell(
           onTap: () {},
           child: MaterialButton(
@@ -102,18 +109,19 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
+                Icon(
                   Icons.file_upload,
                   color: Colors.white,
-                  size: 20,
+                  size: screenHeight * 0.025,
                 ),
-                const SizedBox(width: 10),
+                SizedBox(width: screenWidth * 0.02),
                 Text(
                   "Upload Your Kidney Image",
                   style: GoogleFonts.merriweather(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w600,
-                      fontSize: getResponsiveFontSize(context, 10)),
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: getResponsiveFontSize(10),
+                  ),
                 ),
               ],
             ),
@@ -123,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: PreferredSize(
         preferredSize: Size(screenWidth, screenHeight * 0.22),
         child: AppBar(
@@ -139,240 +147,262 @@ class _HomeScreenState extends State<HomeScreen> {
           title: Text(
             "Renalyze",
             style: GoogleFonts.protestRevolution(
-                textStyle: GoogleFonts.protestRevolution(
               textStyle: TextStyle(
-                fontSize: getResponsiveFontSize(context, 33),
+                fontSize: getResponsiveFontSize(33),
                 fontWeight: FontWeight.normal,
                 color: const Color(0xFFFFFFFF).withOpacity(0.62),
               ),
-            )),
+            ),
           ),
           flexibleSpace: Container(
             alignment: Alignment.bottomCenter,
             decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color(0xFF2F79E8),
-                    Color(0xFF9AD7F1),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
-                borderRadius: BorderRadius.only(
-                  bottomRight: Radius.circular(28),
-                  bottomLeft: Radius.circular(28),
-                )),
+              gradient: LinearGradient(
+                colors: [
+                  Color(0xFF2F79E8),
+                  Color(0xFF9AD7F1),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+              ),
+              borderRadius: BorderRadius.only(
+                bottomRight: Radius.circular(28),
+                bottomLeft: Radius.circular(28),
+              ),
+            ),
             child: Image.asset(
               "assets/images/authlogo.png",
               scale: 2.5,
+              fit: BoxFit.contain,
             ),
           ),
           leading: FutureBuilder(
-              future: ApiManager.getUserData(token),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return homeUserDataShimmerEffect();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-                final userData = snapshot.data?.results;
-                return InkWell(
-                  onTap: () =>
-                      Navigator.pushNamed(context, ProfilePage.routeName),
-                  child: buildLeadingWidget(
-                      userImage:
-                          userData?.user?.profileImage?.url.toString() ?? "",
-                      userName: userData?.user?.userName.toString() ?? "",
-                      userEmail: userData?.user?.email.toString() ?? "",
-                      context),
-                );
-              }),
+            future: ApiManager.getUserData(token),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return homeUserDataShimmerEffect();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              }
+              final userData = snapshot.data?.results;
+              return buildLeadingWidget(
+                userImage: userData?.user?.profileImage?.url.toString() ?? "",
+                userName: userData?.user?.userName.toString() ?? "",
+                userEmail: userData?.user?.email.toString() ?? "",
+              );
+            },
+          ),
           leadingWidth: screenWidth * 0.3,
-          actions: [
-            Padding(
-              padding: const EdgeInsets.all(6.0),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.dark_mode_sharp,
-                  color: Colors.white,
-                  //? For light mode  Icons.brightness_4_outlined,
-                  //* For dark mode  Icons.brightness_5_outlined,
-                ),
-                iconSize: 29,
-                onPressed: () {
-                  //! Theme Toggle
-                },
-              ),
-            )
-          ],
+          // actions: [
+          //   Padding(
+          //     padding: EdgeInsets.all(screenWidth * 0.015),
+          //     child: IconButton(
+          //       icon: const Icon(
+          //         Icons.dark_mode_sharp,
+          //         color: Colors.white,
+          //       ),
+          //       iconSize: screenHeight * 0.03,
+          //       onPressed: () {
+
+          //       },
+          //     ),
+          //   ),
+          // ],
         ),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(screenWidth * 0.04),
-          child: Column(
-            children: [
-              Container(
-                width: screenWidth * 0.8,
-                height: screenHeight * 0.08,
-                decoration: BoxDecoration(
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return SingleChildScrollView(
+            padding: EdgeInsets.all(screenWidth * 0.04),
+            child: Column(
+              children: [
+                Container(
+                  width: screenWidth * 0.8,
+                  height: screenHeight * 0.08,
+                  decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(40.0),
                     border: Border.all(
                       color: const Color(0xFF2949C7).withOpacity(0.25),
-                    )),
-                child: homeButton(),
-              ),
-              SizedBox(height: screenHeight * 0.03),
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text("Sections",
+                    ),
+                  ),
+                  child: homeButton(),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    "Sections",
                     textAlign: TextAlign.start,
                     style: GoogleFonts.crimsonText(
-                        color: Colors.black,
-                        fontSize: getResponsiveFontSize(context, 14),
-                        fontWeight: FontWeight.bold)),
-              ),
-              SizedBox(height: screenHeight * 0.004),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
+                      color: Colors.black,
+                      fontSize: getResponsiveFontSize(14),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.01),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const DoctorsScreen()));
-                },
-                child: Row(
+                          builder: (context) => const DoctorsScreen()),
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 3,
+                        child: kidnyResultWidget(
+                          containerHeight: screenHeight * 0.12,
+                          containerWidth: screenWidth * 0.65,
+                          context,
+                          containerIcon: "assets/images/home_doctor_icon.png",
+                          containerText: Text(
+                            "Doctors",
+                            style: GoogleFonts.merriweather(
+                              color: const Color(0xFF2F79E8),
+                              fontSize: getResponsiveFontSize(18),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: screenWidth * 0.02),
+                      Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Egfr()),
+                            );
+                          },
+                          child: kidnyResultWidget(
+                            containerHeight: screenHeight * 0.12,
+                            containerWidth: screenWidth * 0.25,
+                            context,
+                            containerIcon: "assets/images/home_egfr_icon.png",
+                            containerText: Text(
+                              "Egfr",
+                              style: GoogleFonts.crimsonText(
+                                color: const Color(0xFF2F79E8),
+                                fontSize: getResponsiveFontSize(12),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.01),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Expanded(
-                      flex: 3,
-                      child: kidnyResultWidget(
-                        containerHeight: screenHeight * 0.12,
-                        containerWidth: screenWidth * 0.65,
-                        context,
-                        containerIcon: "assets/images/home_doctor_icon.png",
-                        containerText: Text("Doctors",
-                            style: GoogleFonts.merriweather(
-                                color: const Color(0xFF2F79E8),
-                                fontSize: getResponsiveFontSize(context, 18),
-                                fontWeight: FontWeight.bold)),
+                      child: GestureDetector(
+                        onTap: () {
+                          // Navigate To Community
+                        },
+                        child: kidnyResultWidget(
+                          containerHeight: screenHeight * 0.1,
+                          containerWidth: screenWidth * 0.48,
+                          context,
+                          containerIcon:
+                              "assets/images/home_community_icon.png",
+                          containerText: Text(
+                            "Community",
+                            style: GoogleFonts.crimsonText(
+                              color: const Color(0xFF2F79E8),
+                              fontSize: getResponsiveFontSize(12),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     SizedBox(width: screenWidth * 0.02),
                     Expanded(
-                      flex: 1,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(context,
-                              MaterialPageRoute(builder: (context) => Egfr()));
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const ArticlesScreen(),
+                            ),
+                          );
                         },
                         child: kidnyResultWidget(
-                          containerHeight: screenHeight * 0.12,
-                          containerWidth: screenWidth * 0.25,
+                          containerHeight: screenHeight * 0.1,
+                          containerWidth: screenWidth * 0.48,
                           context,
-                          containerIcon: "assets/images/home_egfr_icon.png",
-                          containerText: Text("Egfr",
-                              style: GoogleFonts.crimsonText(
-                                  color: const Color(0xFF2F79E8),
-                                  fontSize: getResponsiveFontSize(context, 12),
-                                  fontWeight: FontWeight.bold)),
+                          containerIcon: "assets/images/home_article_icon.png",
+                          containerText: Text(
+                            "articles",
+                            style: GoogleFonts.crimsonText(
+                              color: const Color(0xFF2F79E8),
+                              fontSize: getResponsiveFontSize(12),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: screenHeight * 0.01),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
-                        //! Navigate To Community .
-                      },
-                      child: kidnyResultWidget(
-                        containerHeight: screenHeight * 0.1,
-                        containerWidth: screenWidth * 0.48,
-                        context,
-                        containerIcon: "assets/images/home_community_icon.png",
-                        containerText: Text("Community",
-                            style: GoogleFonts.crimsonText(
-                                color: const Color(0xFF2F79E8),
-                                fontSize: getResponsiveFontSize(context, 12),
-                                fontWeight: FontWeight.bold)),
+                SizedBox(height: screenHeight * 0.01),
+                Row(
+                  children: [
+                    Text(
+                      "Top Rated Doctors",
+                      style: GoogleFonts.crimsonText(
+                        color: Colors.black,
+                        fontSize: getResponsiveFontSize(14),
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  ),
-                  SizedBox(width: screenWidth * 0.02),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () {
+                    const Spacer(),
+                    TextButton(
+                      onPressed: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const ArticlesScreen()),
+                            builder: (context) => const DoctorsScreen(),
+                          ),
                         );
                       },
-                      child: kidnyResultWidget(
-                        containerHeight: screenHeight * 0.1,
-                        containerWidth: screenWidth * 0.48,
-                        context,
-                        containerIcon: "assets/images/home_article_icon.png",
-                        containerText: Text("articles",
-                            style: GoogleFonts.crimsonText(
-                                color: const Color(0xFF2F79E8),
-                                fontSize: getResponsiveFontSize(context, 12),
-                                fontWeight: FontWeight.bold)),
+                      child: Text(
+                        "See all",
+                        style: GoogleFonts.crimsonText(
+                          color: Colors.grey.shade600,
+                          fontSize: getResponsiveFontSize(12),
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.005),
-              Row(
-                children: [
-                  Text("Top Rated Doctors",
-                      style: GoogleFonts.crimsonText(
-                          color: Colors.black,
-                          fontSize: getResponsiveFontSize(context, 14),
-                          fontWeight: FontWeight.bold)),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DoctorsScreen(),
-                          ));
-                    },
-                    child: Text("See all",
-                        style: GoogleFonts.crimsonText(
-                            color: Colors.grey.shade600,
-                            fontSize: getResponsiveFontSize(context, 12),
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ],
-              ),
-              SizedBox(height: screenHeight * 0.022),
-              FutureBuilder(
-                future: _doctorsFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return homeDoctorWidgetShimmerEffect(
-                        screenHeight, screenWidth);
-                  }
-                  if (snapshot.hasError) {
-                    return Center(child: Text('Error: ${snapshot.error}'));
-                  }
-                  final doctors = snapshot.data?.results ?? [];
-                  return doctors.isEmpty
-                      ? const Center(child: Text('No doctors found'))
-                      : SizedBox(
-                          height: screenHeight * 0.2,
-                          child: Expanded(
+                  ],
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                FutureBuilder(
+                  future: _doctorsFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return homeDoctorWidgetShimmerEffect(
+                          screenHeight, screenWidth);
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    }
+                    final doctors = snapshot.data?.results ?? [];
+                    return doctors.isEmpty
+                        ? const Center(child: Text('No doctors found'))
+                        : SizedBox(
+                            height: screenHeight * 0.22,
                             child: ListView.separated(
                               separatorBuilder: (context, index) =>
-                                  SizedBox(width: screenWidth * 0.002),
+                                  SizedBox(width: screenWidth * 0.02),
                               scrollDirection: Axis.horizontal,
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
@@ -399,13 +429,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                 );
                               },
                             ),
-                          ),
-                        );
-                },
-              ),
-            ],
-          ),
-        ),
+                          );
+                  },
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

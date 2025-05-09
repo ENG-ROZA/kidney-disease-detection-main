@@ -46,14 +46,16 @@ Widget doctorsItem(
                     Text(
                       // address.length > 14 ? '${address.substring(0, 14)}...' : address,
                       address,
+                    textAlign: TextAlign.start,
                       style: GoogleFonts.crimsonText(
                         color: Colors.black.withOpacity(0.5),
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                       ),
+                      
                       overflow: TextOverflow
                           .ellipsis, //! Note : if the address is too long, it will be truncated with an ellipsis
-                      maxLines: 1,
+                      maxLines: 2,
                     ),
                   ],
                 ),

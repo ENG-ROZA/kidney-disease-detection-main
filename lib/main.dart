@@ -71,7 +71,7 @@ class MyApp extends StatelessWidget {
         OnboardingScreen.routeName: (_) => OnboardingScreen(),
         Profile.routeName: (_) => Profile(),
         SplashScreen.routeName: (_) => SplashScreen(),
-        ProfilePage.routeName: (_) => ProfilePage(),
+     //   ProfilePage.routeName: (_) => ProfilePage(),
         LoginScreen.routeName: (_) => LoginScreen(),
         SignupScreen.routeName: (_) => SignupScreen(),
         OtpScreen.routeName: (_) => OtpScreen(),
@@ -88,7 +88,7 @@ class MyApp extends StatelessWidget {
         ScanScreen.routeName: (_) => ScanScreen(),
         UserReviewsScreen.routeName: (_) => UserReviewsScreen(),
         EditReview.routeName: (_) => EditReview(),
-        //     ScanDetails.routeName: (_) => ScanDetails(),
+            ScanDetails.routeName: (_) => ScanDetails(),
         ChangePassword.routeName: (_) => ChangePassword(),
       },
     );

@@ -64,7 +64,7 @@ class _BotScreenState extends State<BotScreen> {
         }
       }
 
-     // await OpenFilex.open(localPath);
+      // await OpenFilex.open(localPath);
     }
   }
 
@@ -154,7 +154,7 @@ class _BotScreenState extends State<BotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -217,7 +217,6 @@ class _BotScreenState extends State<BotScreen> {
                   Expanded(
                     child: TextField(
                       controller: _textController,
-                      autofocus: true,
                       decoration: InputDecoration(
                         hintStyle: const TextStyle(
                             fontSize: 12, fontWeight: FontWeight.w600),

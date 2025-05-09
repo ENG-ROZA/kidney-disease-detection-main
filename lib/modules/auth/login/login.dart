@@ -223,66 +223,66 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(
                           height: 32,
                         ),
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Divider(
-                                color: Color(0xFF8B8C9F),
-                                thickness: 1,
-                              ),
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Text('or continue with',
-                                  style: GoogleFonts.crimsonText(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.normal)),
-                            ),
-                            const Expanded(
-                              child: Divider(
-                                color: Color(0xFF8B8C9F),
-                                thickness: 1,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        MaterialButton(
-                          onPressed: () {
-                            //! singInWithGoogle();
-                            progressDialog(context);
-                          },
-                          height: 70,
-                          elevation: 0,
-                          color: const Color(0xFFFFFFFF),
-                          shape: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(30),
-                              borderSide: const BorderSide(
-                                color: Color(0xFFD8DADC),
-                              )),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Image.asset(
-                                "assets/images/google.png",
-                                height: 20,
-                                width: 20,
-                              ),
-                              const SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                "Sign in with Google",
-                                style: GoogleFonts.crimsonText(
-                                    fontSize: 16, fontWeight: FontWeight.w600),
-                              )
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 30.0),
+                        // Row(
+                        //   children: [
+                        //     const Expanded(
+                        //       child: Divider(
+                        //         color: Color(0xFF8B8C9F),
+                        //         thickness: 1,
+                        //       ),
+                        //     ),
+                        //     Padding(
+                        //       padding:
+                        //           const EdgeInsets.symmetric(horizontal: 8.0),
+                        //       child: Text('or continue with',
+                        //           style: GoogleFonts.crimsonText(
+                        //               fontSize: 15,
+                        //               fontWeight: FontWeight.normal)),
+                        //     ),
+                        //     const Expanded(
+                        //       child: Divider(
+                        //         color: Color(0xFF8B8C9F),
+                        //         thickness: 1,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                        // const SizedBox(
+                        //   height: 20,
+                        // ),
+                        // MaterialButton(
+                        //   onPressed: () {
+                        //     //! singInWithGoogle();
+                        //     progressDialog(context);
+                        //   },
+                        //   height: 70,
+                        //   elevation: 0,
+                        //   color: const Color(0xFFFFFFFF),
+                        //   shape: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(30),
+                        //       borderSide: const BorderSide(
+                        //         color: Color(0xFFD8DADC),
+                        //       )),
+                        //   child: Row(
+                        //     mainAxisAlignment: MainAxisAlignment.center,
+                        //     children: [
+                        //       Image.asset(
+                        //         "assets/images/google.png",
+                        //         height: 20,
+                        //         width: 20,
+                        //       ),
+                        //       const SizedBox(
+                        //         width: 10,
+                        //       ),
+                        //       Text(
+                        //         "Sign in with Google",
+                        //         style: GoogleFonts.crimsonText(
+                        //             fontSize: 16, fontWeight: FontWeight.w600),
+                        //       )
+                        //     ],
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 30.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [

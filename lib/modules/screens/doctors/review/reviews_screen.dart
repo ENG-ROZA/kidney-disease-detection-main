@@ -120,6 +120,7 @@ class _UserReviewsScreenState extends State<UserReviewsScreen> {
                   const SizedBox(height: 10),
                   Text(
                     'You have not reviewed this doctor yet',
+                    textAlign: TextAlign.center,
                     style: GoogleFonts.merriweather(
                       color: const Color(0xFF606770),
                       fontWeight: FontWeight.w400,

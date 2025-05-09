@@ -4,25 +4,31 @@ import 'package:graduation_project/layout/home_layout.dart';
 import 'package:graduation_project/shared/utils/colors.dart';
 
 void showLoading(BuildContext context) {
+  final mediaQuery = MediaQuery.of(context);
+  final screenHeight = mediaQuery.size.height;
+  final screenWidth = mediaQuery.size.width;
+
   showDialog(
     context: context,
     builder: (context) {
-      return const AlertDialog(
+      return AlertDialog(
         actions: [
           Center(
             child: Padding(
-              padding: EdgeInsets.all(22),
+              padding: EdgeInsets.all(screenWidth * 0.05),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Text(
+                  const Text(
                     "Scanning in progress...",
                     style: TextStyle(color: primaryColor),
                   ),
-                  Spacer(),
-                  CircularProgressIndicator(
-                    color: primaryColor,
+                  const Spacer(),
+                  SizedBox(
+                    width: screenHeight * 0.03,
+                    height: screenHeight * 0.03,
+                    child: const CircularProgressIndicator(color: primaryColor),
                   ),
                 ],
               ),
@@ -39,47 +45,55 @@ void hideLoading(BuildContext context) {
 }
 
 void showError(BuildContext context, String defaultErrorMessage) {
+  final mediaQuery = MediaQuery.of(context);
+  final screenHeight = mediaQuery.size.height;
+  final screenWidth = mediaQuery.size.width;
+
   showDialog(
     context: context,
     builder: (_) {
       return Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(screenWidth * 0.05),
         ),
         child: Container(
-          padding: const EdgeInsets.all(20.0),
+          padding: EdgeInsets.all(screenWidth * 0.05),
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.circular(20.0),
+            borderRadius: BorderRadius.circular(screenWidth * 0.05),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              const Row(
+              Row(
                 children: [
                   Icon(
                     Icons.info_outline_rounded,
-                    color: Color(0xFFFF3B30),
-                    size: 26.5,
+                    color: const Color(0xFFFF3B30),
+                    size: screenHeight * 0.03,
                   ),
-                  SizedBox(width: 8.5),
+                  SizedBox(width: screenWidth * 0.02),
                   Text(
                     "ERROR",
                     style: TextStyle(
-                      fontSize: 20,
+                      fontSize: screenHeight * 0.025,
                       fontWeight: FontWeight.bold,
-                      color: Color(0xFFFF3B30),
+                      color: const Color(0xFFFF3B30),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
-              Text(defaultErrorMessage,
-                  style: GoogleFonts.merriweather(
-                      fontSize: 18, color: Colors.black.withOpacity(0.5))),
-              const SizedBox(height: 20),
+              SizedBox(height: screenHeight * 0.02),
+              Text(
+                defaultErrorMessage,
+                style: GoogleFonts.merriweather(
+                  fontSize: screenHeight * 0.022,
+                  color: Colors.black.withOpacity(0.5),
+                ),
+              ),
+              SizedBox(height: screenHeight * 0.02),
               Align(
                 alignment: Alignment.bottomRight,
                 child: TextButton(
@@ -88,17 +102,19 @@ void showError(BuildContext context, String defaultErrorMessage) {
                   },
                   style: TextButton.styleFrom(
                     backgroundColor: const Color(0xFFFF3B30),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: screenWidth * 0.04,
+                      vertical: screenHeight * 0.015,
+                    ),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15.0),
+                      borderRadius: BorderRadius.circular(screenWidth * 0.03),
                     ),
                   ),
-                  child: const Text(
+                  child: Text(
                     "OK",
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: screenHeight * 0.022,
                     ),
                   ),
                 ),
@@ -111,8 +127,16 @@ void showError(BuildContext context, String defaultErrorMessage) {
   );
 }
 
-void warningDialog(BuildContext context, String message, String redButtonText,
-    VoidCallback redButtonFunction) {
+void warningDialog(
+  BuildContext context,
+  String message,
+  String redButtonText,
+  VoidCallback redButtonFunction,
+) {
+  final mediaQuery = MediaQuery.of(context);
+  final screenHeight = mediaQuery.size.height;
+  final screenWidth = mediaQuery.size.width;
+
   showDialog(
     context: context,
     builder: (_) {
@@ -123,87 +147,107 @@ void warningDialog(BuildContext context, String message, String redButtonText,
         insetAnimationCurve: Curves.decelerate,
         insetAnimationDuration: const Duration(milliseconds: 1000),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
+          borderRadius: BorderRadius.circular(screenWidth * 0.05),
         ),
-        child: Container(
-          height: 230,
-          padding: const EdgeInsets.all(20.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return Container(
+              height: screenHeight * 0.3,
+              width: screenWidth * 0.8,
+              padding: EdgeInsets.all(screenWidth * 0.05),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(screenWidth * 0.05),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Warning",
+                        style: TextStyle(
+                          fontSize: screenHeight * 0.025,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      SizedBox(width: screenWidth * 0.02),
+                      Icon(
+                        Icons.warning,
+                        color: const Color(0xFFFF3B30),
+                        size: screenHeight * 0.025,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: screenHeight * 0.03),
                   Text(
-                    "Warning",
-                    style: TextStyle(
-                      fontSize: 20,
+                    message,
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.merriweather(
+                      fontSize: screenHeight * 0.022,
+                      color: Colors.black.withOpacity(0.5),
                       fontWeight: FontWeight.bold,
-                      color: Colors.black,
                     ),
                   ),
-                  SizedBox(width: 10),
-                  Icon(
-                    Icons.warning,
-                    color: Color(0xFFFF3B30),
-                    size: 25,
+                  SizedBox(height: screenHeight * 0.03),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFDADADA),
+                              borderRadius:
+                                  BorderRadius.circular(screenWidth * 0.03),
+                            ),
+                            alignment: Alignment.center,
+                            height: screenHeight * 0.06,
+                            child: Text(
+                              "Cancel",
+                              style: GoogleFonts.merriweather(
+                                fontSize: screenHeight * 0.02,
+                                color: Colors.black.withOpacity(0.6),
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(width: screenWidth * 0.02),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: redButtonFunction,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFF3B30),
+                              borderRadius:
+                                  BorderRadius.circular(screenWidth * 0.03),
+                            ),
+                            alignment: Alignment.center,
+                            height: screenHeight * 0.06,
+                            child: Text(
+                              redButtonText,
+                              style: GoogleFonts.merriweather(
+                                fontSize: screenHeight * 0.022,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 27.0),
-              Text(message,
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.merriweather(
-                      fontSize: 18,
-                      color: Colors.black.withOpacity(0.5),
-                      fontWeight: FontWeight.bold)),
-              const SizedBox(height: 30),
-              Row(children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFDADADA),
-                        borderRadius: BorderRadius.circular(10.0),
-                      ),
-                      alignment: Alignment.center,
-                      width: 130,
-                      height: 50,
-                      child: Text("Cancel",
-                          style: GoogleFonts.merriweather(
-                              fontSize: 16,
-                              color: Colors.black.withOpacity(0.6),
-                              fontWeight: FontWeight.bold))),
-                ),
-                const Spacer(),
-                GestureDetector(
-                  onTap: () {
-                    redButtonFunction();
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFFF3B30),
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    alignment: Alignment.center,
-                    width: 130,
-                    height: 50,
-                    child: Text(redButtonText,
-                        style: GoogleFonts.merriweather(
-                            fontSize: 16,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold)),
-                  ),
-                ),
-              ])
-            ],
-          ),
+            );
+          },
         ),
       );
     },
@@ -211,22 +255,26 @@ void warningDialog(BuildContext context, String message, String redButtonText,
 }
 
 void showSuccessDialog(BuildContext context, String message) {
+  final mediaQuery = MediaQuery.of(context);
+  final screenHeight = mediaQuery.size.height;
+  final screenWidth = mediaQuery.size.width;
+
   showDialog(
     context: context,
     builder: (context) {
       return AlertDialog(
-        title: const Row(
+        title: Row(
           children: [
             Icon(
               Icons.check_circle_outline_rounded,
               color: primaryColor,
-              size: 26.5,
+              size: screenHeight * 0.025,
             ),
-            SizedBox(width: 8.5),
+            SizedBox(width: screenWidth * 0.02),
             Text(
               "Success",
               style: TextStyle(
-                fontSize: 20,
+                fontSize: screenHeight * 0.025,
                 fontWeight: FontWeight.bold,
                 color: primaryColor,
               ),
@@ -236,7 +284,7 @@ void showSuccessDialog(BuildContext context, String message) {
         content: Text(
           message,
           style: GoogleFonts.merriweather(
-            fontSize: 18,
+            fontSize: screenHeight * 0.022,
             color: Colors.black.withOpacity(0.5),
           ),
         ),
@@ -244,9 +292,12 @@ void showSuccessDialog(BuildContext context, String message) {
           TextButton(
             style: TextButton.styleFrom(
               backgroundColor: primaryColor,
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.04,
+                vertical: screenHeight * 0.015,
+              ),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15.0),
+                borderRadius: BorderRadius.circular(screenWidth * 0.03),
               ),
             ),
             onPressed: () {
@@ -259,11 +310,11 @@ void showSuccessDialog(BuildContext context, String message) {
                 (route) => false,
               );
             },
-            child: const Text(
+            child: Text(
               "Finish",
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 16,
+                fontSize: screenHeight * 0.022,
               ),
             ),
           ),
@@ -274,22 +325,33 @@ void showSuccessDialog(BuildContext context, String message) {
 }
 
 void showLoadingDialog(BuildContext context) {
+  final mediaQuery = MediaQuery.of(context);
+  final screenHeight = mediaQuery.size.height;
+  final screenWidth = mediaQuery.size.width;
+
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (context) {
       return Dialog(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(screenWidth * 0.03),
         ),
-        child: const Padding(
-          padding: EdgeInsets.all(16),
+        child: Padding(
+          padding: EdgeInsets.all(screenWidth * 0.04),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              CircularProgressIndicator(color: primaryColor),
-              SizedBox(width: 16),
-              Text("Loading...", style: TextStyle(color: primaryColor)),
+              SizedBox(
+                width: screenHeight * 0.03,
+                height: screenHeight * 0.03,
+                child: const CircularProgressIndicator(color: primaryColor),
+              ),
+              SizedBox(width: screenWidth * 0.03),
+              Text(
+                "Loading...",
+                style: TextStyle(color: primaryColor, fontSize: screenHeight * 0.022),
+              ),
             ],
           ),
         ),

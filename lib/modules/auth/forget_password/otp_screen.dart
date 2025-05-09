@@ -62,6 +62,10 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -75,102 +79,114 @@ class _OtpScreenState extends State<OtpScreen> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
+          final maxHeight = constraints.maxHeight;
+          final maxWidth = constraints.maxWidth;
+
           return SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: EdgeInsets.symmetric(horizontal: maxWidth * 0.04),
             child: Form(
               key: _formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  SizedBox(height: constraints.maxHeight * 0.02),
-                  Image.asset("assets/images/authlogo.png",
-                      height: 120, width: 200),
-                  SizedBox(height: constraints.maxHeight * 0.04),
+                  SizedBox(height: maxHeight * 0.02),
+                  Container(
+                    height: maxHeight * 0.15,
+                    width: maxWidth * 0.5,
+                    alignment: Alignment.center,
+                    child: Image.asset(
+                      "assets/images/authlogo.png",
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                  SizedBox(height: maxHeight * 0.03),
                   Text(
                     "Check your email",
                     style: GoogleFonts.merriweather(
-                      fontSize: 30,
+                      fontSize: screenHeight * 0.035,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: maxHeight * 0.01),
                   if (email != null)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "We’ve sent a code to ",
-                          style: GoogleFonts.crimsonText(
-                            fontSize: 16,
-                            color: secondryColor,
-                            fontWeight: FontWeight.w600,
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: maxWidth * 0.05),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            "We’ve sent a code to ",
+                            style: GoogleFonts.crimsonText(
+                              fontSize: screenHeight * 0.02,
+                              color: secondryColor,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
-                        Text(
-                          email!.substring(
-                              0,
-                              email!.contains('@')
-                                  ? email!.indexOf('@')
-                                  : email!
-                                      .length), //! To get the email without the domain part.
-                          style: GoogleFonts.crimsonText(
-                            fontSize: 18,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold,
+                          Text(
+                            email!.substring(
+                                0,
+                                email!.contains('@')
+                                    ? email!.indexOf('@')
+                                    : email!.length),
+                            style: GoogleFonts.crimsonText(
+                              fontSize: screenHeight * 0.022,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  SizedBox(height: constraints.maxHeight * 0.09),
+                  SizedBox(height: maxHeight * 0.06),
                   Pinput(
                     controller: codeController,
                     validator: (value) => value?.isEmpty ?? true
                         ? 'The code you entered is incorrect. Please try again.'
                         : null,
                     errorPinTheme: PinTheme(
-                      width: 300,
-                      height: 77,
+                      width: maxWidth * 0.7,
+                      height: maxHeight * 0.08,
                       decoration: BoxDecoration(
-                          border: Border.all(color: const Color(0xFFFF3D3D)),
-                          borderRadius: BorderRadius.circular(15)),
+                        border: Border.all(color: const Color(0xFFFF3D3D)),
+                        borderRadius: BorderRadius.circular(maxWidth * 0.05),
+                      ),
+                    ),
+                    defaultPinTheme: PinTheme(
+                      width: maxWidth * 0.7,
+                      height: maxHeight * 0.08,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: const Color(0xFFD8DADC)),
+                        borderRadius: BorderRadius.circular(maxWidth * 0.05),
+                      ),
+                      textStyle: GoogleFonts.merriweather(
+                        fontSize: screenHeight * 0.028,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     showCursor: true,
                     autofocus: true,
-                    defaultPinTheme: PinTheme(
-                        width: 300,
-                        height: 77,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: const Color(0xFFD8DADC)),
-                            borderRadius: BorderRadius.circular(15)),
-                        textStyle: GoogleFonts.merriweather(
-                            fontSize: 30,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black)),
                     length: 4,
-                    separatorBuilder: (index) {
-                      return const SizedBox(
-                        width: 16,
-                      );
-                    },
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                    separatorBuilder: (index) =>
+                        SizedBox(width: maxWidth * 0.03),
                     keyboardType: TextInputType.number,
                     errorTextStyle: GoogleFonts.crimsonText(
-                      fontSize: 12,
+                      fontSize: screenHeight * 0.018,
                       fontWeight: FontWeight.normal,
                       color: const Color(0xFFFF3D3D),
                     ),
                     onCompleted: (value) => _verifyCode(context: context),
                   ),
-                  SizedBox(height: constraints.maxHeight * 0.3),
+                  SizedBox(height: maxHeight * 0.12),
                   FutureBuilder<Response?>(
                     future: _otpCodeFuture,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return authButtonLoadingWidget();
                       } else if (snapshot.hasError) {
-                        return Text('Error: ${snapshot.error}');
+                        return Center(child: Text('Error: ${snapshot.error}'));
                       } else if (snapshot.hasData) {
-                        // Handle successful response
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           Navigator.pushAndRemoveUntil(
                             context,
@@ -183,8 +199,9 @@ class _OtpScreenState extends State<OtpScreen> {
                         });
                         return const SizedBox.shrink();
                       }
+
                       return Padding(
-                        padding: const EdgeInsets.all(11),
+                        padding: EdgeInsets.all(screenWidth * 0.04),
                         child: CustomButton(
                           buttonText: "Send Code",
                           onPressed: () => _verifyCode(context: context),

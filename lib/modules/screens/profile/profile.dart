@@ -19,29 +19,26 @@ import 'package:provider/provider.dart';
 class Profile extends StatelessWidget {
   static const String routeName = "Profile";
 
-  final headerTextStyle = GoogleFonts.merriweather(
-    fontSize: 16,
-    fontWeight: FontWeight.bold,
-  );
-  final itemTextStyle = GoogleFonts.crimsonText(
-      fontSize: 16,
-      fontWeight: FontWeight.bold,
-      color: Colors.black.withOpacity(0.7));
+  final double baseScreenWidth = 414; // Reference width (iPhone 12 Pro Max)
+
+  double getResponsiveFontSize(BuildContext context, double baseSize) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    return baseSize * (screenWidth / baseScreenWidth);
+  }
+
+  final TextStyle headerTextStyle = const TextStyle(); // Will be updated dynamically
+  final TextStyle itemTextStyle = const TextStyle(); // Will be updated dynamically
+
   void logout(BuildContext context) async {
-    //! print("Pre-logout token: ${CachedData.getFromCache("token")}"); //? For debugging
     String token = CachedData.getFromCache("token");
     try {
-      print("Sending token: $token");
       showLoadingDialog(context);
       Response? response =
           await ApiManager.logOut(context: context, token: token);
-      //! print("API response: ${response?.data}"); //? For debugging
       if (response?.data["success"] == true) {
         await CachedData.deleteFromCache("token");
-        //! print("Post-deletion token: ${CachedData.getFromCache("token")}"); //? For debugging
         Navigator.pushReplacementNamed(context, LoginScreen.routeName);
         showSuccessMessage(context, "You have been logged out successfully");
-
         Provider.of<AppProvider>(context, listen: false).resetTabIndex();
       }
     } catch (e) {
@@ -55,10 +52,8 @@ class Profile extends StatelessWidget {
     try {
       Response? response =
           await ApiManager.deleteAccount(context: context, token: token);
-
       if (response?.data["success"] == true) {
         await CachedData.deleteFromCache("token");
-
         Navigator.pushReplacementNamed(context, LoginScreen.routeName);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           showCloseIcon: true,
@@ -82,229 +77,253 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
+    final headerTextStyle = GoogleFonts.merriweather(
+      fontSize: getResponsiveFontSize(context, 16),
+      fontWeight: FontWeight.bold,
+    );
+
+    final itemTextStyle = GoogleFonts.crimsonText(
+      fontSize: getResponsiveFontSize(context, 16),
+      fontWeight: FontWeight.bold,
+      color: Colors.black.withOpacity(0.7),
+    );
+
     String token = CachedData.getFromCache("token");
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(18.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProfilePage(),
-                    ),
-                  );
-                },
-                child: Center(child: buildProfileItem(token))),
-            const SizedBox(height: 10),
-            Text(
-              "Privacy",
-              style: headerTextStyle,
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const PrivacyPolicy(),
-                    ));
-              },
-              child: buildDrawerItem("assets/images/privacy.png",
-                  "Privacy Policy", Icons.arrow_forward_ios),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ChangePassword(),
-                    ));
-              },
-              child: buildDrawerItem("assets/images/changepassword.png",
-                  "Change Password", Icons.arrow_forward_ios),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Divider(
-              thickness: 1.5,
-              endIndent: 15,
-              color: Color(0xFFD1D5DB),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            Text(
-              "Help and Support",
-              style: headerTextStyle,
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => FaqPage(),
-                    ));
-              },
-              child: buildDrawerItem(
-                "assets/images/faqq.png",
-                "FAQs",
-                Icons.arrow_forward_ios,
-              ),
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const HelpCenter(),
-                    ));
-              },
-              child: buildDrawerItem("assets/images/helpcenter.png",
-                  "Help Center", Icons.arrow_forward_ios),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const Divider(
-              thickness: 1.5,
-              endIndent: 15,
-              color: Color(0xFFD1D5DB),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text(
-              "Dangerous Zone",
-              style: headerTextStyle,
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            GestureDetector(
-              onTap: () {
-                warningDialog(
-                  context,
-                  "Are you sure want to delete your account?",
-                  "Delete",
-                  () {
-                    clearAccount(context);
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(screenWidth * 0.05),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                
                   },
-                );
-              },
-              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-                const SizedBox(
-                  width: 10,
+                  child: Center(child: buildProfileItem(token, screenHeight)),
                 ),
-                Image.asset(
-                  "assets/images/delete.png",
-                  height: 30,
-                  width: 30,
-                ),
-                const SizedBox(
-                  width: 18,
-                ),
+                SizedBox(height: screenHeight * 0.02),
                 Text(
-                  "Delete Account",
-                  style: GoogleFonts.crimsonText(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFFe90005)),
+                  "Privacy",
+                  style: headerTextStyle,
                 ),
-                const Spacer(),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  color: Color(0xFFe90005),
-                  size: 15,
-                ),
-              ]),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            const Divider(
-              thickness: 1.5,
-              endIndent: 15,
-              color: Color(0xFFD1D5DB),
-            ),
-            const SizedBox(
-              height: 15,
-            ),
-            Text(
-              "Sign Out",
-              style: headerTextStyle,
-            ),
-            const SizedBox(
-              height: 25,
-            ),
-            GestureDetector(
-              onTap: () {
-                warningDialog(
-                  context,
-                  "Are you sure want to logout?",
-                  "Logout",
-                  () {
-                    logout(context);
-                    // Navigator.pushAndRemoveUntil(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (context) => LoginScreen()),
-                    //     (route) => false);
+                SizedBox(height: screenHeight * 0.02),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicy(),
+                      ),
+                    );
                   },
-                );
-              },
-              child: buildDrawerItem("assets/images/signout.png", "Logout",
-                  Icons.arrow_forward_ios),
+                  child: buildDrawerItem(
+                    "assets/images/privacy.png",
+                    "Privacy Policy",
+                    Icons.arrow_forward_ios,
+                    screenHeight,
+                    screenWidth,
+                    itemTextStyle,
+                  ),
+                ),
+                   SizedBox(height: screenHeight * 0.02),
+                // SizedBox(height: screenHeight * 0.02),
+                // GestureDetector(
+                //   onTap: () {
+                //     Navigator.push(
+                //       context,
+                //       MaterialPageRoute(
+                //         builder: (context) => ChangePassword(),
+                //       ),
+                //     );
+                //   },
+                //   child: buildDrawerItem(
+                //     "assets/images/changepassword.png",
+                //     "Change Password",
+                //     Icons.arrow_forward_ios,
+                //     screenHeight,
+                //     screenWidth,
+                //     itemTextStyle,
+                //   ),
+                // ),
+                SizedBox(height: screenHeight * 0.01),
+                const Divider(
+                  thickness: 1.5,
+                  endIndent: 15,
+                  color: Color(0xFFD1D5DB),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Text(
+                  "Help and Support",
+                  style: headerTextStyle,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => FaqPage(),
+                      ),
+                    );
+                  },
+                  child: buildDrawerItem(
+                    "assets/images/faqq.png",
+                    "FAQs",
+                    Icons.arrow_forward_ios,
+                    screenHeight,
+                    screenWidth,
+                    itemTextStyle,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const HelpCenter(),
+                      ),
+                    );
+                  },
+                  child: buildDrawerItem(
+                    "assets/images/helpcenter.png",
+                    "Help Center",
+                    Icons.arrow_forward_ios,
+                    screenHeight,
+                    screenWidth,
+                    itemTextStyle,
+                  ),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                const Divider(
+                  thickness: 1.5,
+                  endIndent: 15,
+                  color: Color(0xFFD1D5DB),
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                Text(
+                  "Dangerous Zone",
+                  style: headerTextStyle,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                GestureDetector(
+                  onTap: () {
+                    warningDialog(
+                      context,
+                      "Are you sure want to delete your account?",
+                      "Delete",
+                      () {
+                        clearAccount(context);
+                      },
+                    );
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      SizedBox(width: screenWidth * 0.02),
+                      Image.asset(
+                        "assets/images/delete.png",
+                        height: screenHeight * 0.03,
+                        width: screenHeight * 0.03,
+                      ),
+                      SizedBox(width: screenWidth * 0.04),
+                      Text(
+                        "Delete Account",
+                        style: GoogleFonts.crimsonText(
+                          fontSize: getResponsiveFontSize(context, 16),
+                          fontWeight: FontWeight.bold,
+                          color: const Color(0xFFe90005),
+                        ),
+                      ),
+                      const Spacer(),
+                      Icon(
+                        Icons.arrow_forward_ios,
+                        color: const Color(0xFFe90005),
+                        size: screenHeight * 0.02,
+                      ),
+                    ],
+                  ),
+                ),
+             SizedBox(height: screenHeight * 0.02),
+                const Divider(
+                  thickness: 1.5,
+                  endIndent: 15,
+                  color: Color(0xFFD1D5DB),
+                ),
+                 SizedBox(height: screenHeight * 0.02),
+                Text(
+                  "Sign Out",
+                  style: headerTextStyle,
+                ),
+                SizedBox(height: screenHeight * 0.02),
+                GestureDetector(
+                  onTap: () {
+                    warningDialog(
+                      context,
+                      "Are you sure want to logout?",
+                      "Logout",
+                      () {
+                        logout(context);
+                      },
+                    );
+                  },
+                  child: buildDrawerItem(
+                    "assets/images/signout.png",
+                    "Logout",
+                    Icons.arrow_forward_ios,
+                    screenHeight,
+                    screenWidth,
+                    itemTextStyle,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  Widget buildDrawerItem(String leftIcon, String title, IconData rightIcon) =>
-      Row(mainAxisAlignment: MainAxisAlignment.start, children: [
-        const SizedBox(
-          width: 10,
-        ),
-        Image.asset(
-          leftIcon,
-          height: 33,
-          width: 33,
-        ),
-        const SizedBox(
-          width: 18,
-        ),
-        Text(
-          title,
-          style: itemTextStyle,
-        ),
-        const Spacer(),
-        Icon(
-          rightIcon,
-          color: Colors.black.withOpacity(0.7),
-          size: 15,
-        ),
-      ]);
-}
+  Widget buildDrawerItem(
+    String leftIcon,
+    String title,
+    IconData rightIcon,
+    double screenHeight,
+    double screenWidth,
+    TextStyle itemTextStyle,
+  ) =>
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          SizedBox(width: screenWidth * 0.02),
+          Image.asset(
+            leftIcon,
+            height: screenHeight * 0.035,
+            width: screenHeight * 0.035,
+          ),
+          SizedBox(width: screenWidth * 0.04),
+          Text(
+            title,
+            style: itemTextStyle,
+          ),
+          const Spacer(),
+          Icon(
+            rightIcon,
+            color: Colors.black.withOpacity(0.7),
+            size: screenHeight * 0.02,
+          ),
+        ],
+      );
 
-Widget buildProfileItem(String token) {
-  return FutureBuilder(
+  Widget buildProfileItem(String token, double screenHeight) {
+    return FutureBuilder(
       future: ApiManager.getUserData(token),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -313,27 +332,29 @@ Widget buildProfileItem(String token) {
           return Center(child: Text(snapshot.error.toString()));
         }
         final userData = snapshot.data?.results;
-
         return Column(
           children: [
             CircleAvatar(
-              radius: 50,
-              child: Image.network(
-                userData?.user?.profileImage?.url.toString() ?? "",
-                fit: BoxFit.cover,
+              radius: screenHeight * 0.07,
+              child: ClipOval(
+                child: Image.network(
+                  userData?.user?.profileImage?.url.toString() ?? "",
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
-            const SizedBox(
-              width: 20,
-            ),
+            const SizedBox(width: 20),
             Text(
               userData?.user?.userName.toString() ?? "",
               style: GoogleFonts.merriweather(
-                  color: Colors.black.withOpacity(0.8),
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold),
+                color: Colors.black.withOpacity(0.8),
+                fontSize: screenHeight * 0.02,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         );
-      });
+      },
+    );
+  }
 }

@@ -12,9 +12,9 @@ class HelpCenter extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-           surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0.0,
         automaticallyImplyLeading: true,
         leading: IconButton(
@@ -61,17 +61,21 @@ class HelpCenter extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(15),
               child: CustomButton(
-                  buttonText: "Contact Us",
-                  onPressed: () async {
-                    const whatsappUrl = "https://wa.me/201150101928";
-              
-                    if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
-                      await launchUrl(Uri.parse(whatsappUrl));
-                    } else {
-                      showErrorMessage(
-                          context, "WhatsApp is not installed on your device");
-                    }
-                  }),
+                buttonText: "Contact Us",
+                onPressed: () async {
+                  const url = 'https://wa.me/201150101928 ';
+                  final uri = Uri.parse(url);
+
+                  try {
+                    await launchUrl(
+                      uri,
+                      mode: LaunchMode.platformDefault,
+                    );
+                  } catch (e) {
+                    showErrorMessage(context, "Failed to open the link.");
+                  }
+                },
+              ),
             )
           ],
         ),

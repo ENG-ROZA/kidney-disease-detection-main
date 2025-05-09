@@ -29,13 +29,11 @@ Widget buildDoctorDetailsWidget(
     required Future<UserModel>? userDataFuture,
     required String doctorAddress}) {
   return SafeArea(
-
     child: LayoutBuilder(
-
       builder: (context, constraints) {
-        
         return SingleChildScrollView(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Stack(
               alignment: Alignment.bottomCenter,
               children: [
@@ -80,13 +78,16 @@ Widget buildDoctorDetailsWidget(
                     const Spacer(),
                     GestureDetector(
                       onTap: () async {
-                        final whatsappUrl = "https://wa.me/2$doctorNumber";
-    
-                        if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
-                          await launchUrl(Uri.parse(whatsappUrl));
-                        } else {
-                          showErrorMessage(context,
-                              "WhatsApp is not installed on your device");
+                        final url = 'https://wa.me/2$doctorNumber ';
+                        final uri = Uri.parse(url);
+
+                        try {
+                          await launchUrl(
+                            uri,
+                            mode: LaunchMode.platformDefault,
+                          );
+                        } catch (e) {
+                          showErrorMessage(context, "Failed to open the link.");
                         }
                       },
                       child: Container(
@@ -97,7 +98,8 @@ Widget buildDoctorDetailsWidget(
                             borderRadius: BorderRadius.circular(9.0),
                           ),
                           child: Center(
-                            child: Image.asset("assets/images/whatsapp_icon.png"),
+                            child:
+                                Image.asset("assets/images/whatsapp_icon.png"),
                           )),
                     ),
                     const SizedBox(
@@ -219,7 +221,8 @@ Widget buildDoctorDetailsWidget(
                   FutureBuilder(
                       future: reviewsFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return doctorReviewShimmerEffect();
                         } else if (snapshot.hasError) {
                           return Center(
@@ -257,6 +260,10 @@ Widget buildDoctorDetailsWidget(
                                 shrinkWrap: true,
                                 physics: const BouncingScrollPhysics(),
                                 itemBuilder: (context, index) {
+                                  final screenWidth =
+                                      MediaQuery.of(context).size.width;
+                                  final screenHeight =
+                                      MediaQuery.of(context).size.height;
                                   return Container(
                                     decoration: BoxDecoration(
                                       color: const Color(0xFFF4F9FE),
@@ -266,10 +273,12 @@ Widget buildDoctorDetailsWidget(
                                           color: const Color(0xFFCFDEF9)),
                                     ),
                                     padding: const EdgeInsets.all(10.0),
-                                    width: 214,
-                                    height: 80,
+                                    width: screenWidth *
+                                        0.53, 
+                                    height: screenHeight * 0.2,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -299,14 +308,17 @@ Widget buildDoctorDetailsWidget(
                                                   MainAxisAlignment.start,
                                               children: [
                                                 Text(
-                                                  reviews[index].user?.userName ??
+                                                  reviews[index]
+                                                          .user
+                                                          ?.userName ??
                                                       "",
-                                                  style: GoogleFonts.crimsonText(
-                                                      color: Colors.black
-                                                          .withOpacity(0.8),
-                                                      fontSize: 14,
-                                                      fontWeight:
-                                                          FontWeight.w600),
+                                                  style:
+                                                      GoogleFonts.crimsonText(
+                                                          color: Colors.black
+                                                              .withOpacity(0.8),
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600),
                                                 ),
                                                 const SizedBox(
                                                   height: 3,
@@ -363,10 +375,10 @@ Widget buildDoctorDetailsWidget(
               ),
             ),
             const SizedBox(
-              height: 25,
+              height: 35,
             ),
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.all(15),
               height: 250,
               width: double.infinity,
               child: Column(
@@ -375,7 +387,8 @@ Widget buildDoctorDetailsWidget(
                   FutureBuilder(
                       future: userDataFuture,
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return reviewsScreensUserDataShimmerEffect();
                         } else if (snapshot.hasError) {
                           return Center(
@@ -429,8 +442,8 @@ Widget buildDoctorDetailsWidget(
                               key: reviewFormKey,
                               child: TextFormField(
                                 minLines: 1,
-                                maxLines: 3,
-                                maxLength: 157,
+                                maxLines: 4,
+                                maxLength: 130,
                                 textInputAction: TextInputAction.newline,
                                 autofocus: true,
                                 style: GoogleFonts.crimsonText(
@@ -438,8 +451,8 @@ Widget buildDoctorDetailsWidget(
                                   fontWeight: FontWeight.w400,
                                 ),
                                 decoration: InputDecoration(
-                                  suffixIcon: Builder(
-                                      builder: (BuildContext iconButtonContext) {
+                                  suffixIcon: Builder(builder:
+                                      (BuildContext iconButtonContext) {
                                     if (isSubmittingReview) {
                                       return Padding(
                                         padding: const EdgeInsets.all(8.0),
@@ -448,13 +461,15 @@ Widget buildDoctorDetailsWidget(
                                           height: 20,
                                           child: CircularProgressIndicator(
                                             strokeWidth: 2,
-                                            color: Colors.black.withOpacity(0.8),
+                                            color:
+                                                Colors.black.withOpacity(0.8),
                                           ),
                                         ),
                                       );
                                     } else {
                                       return IconButton(
-                                        onPressed: () => send(iconButtonContext),
+                                        onPressed: () =>
+                                            send(iconButtonContext),
                                         icon: Icon(
                                           Icons.send,
                                           color: Colors.black.withOpacity(0.8),

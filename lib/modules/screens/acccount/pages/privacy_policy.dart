@@ -34,17 +34,18 @@ We may update these terms at any time. Continued use means you accept the update
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
     return Scaffold(
-      backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-           surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0.0,
         automaticallyImplyLeading: true,
         leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios,
-            size: 20,
-          ),
+          icon: const Icon(Icons.arrow_back_ios, size: 20),
           color: Colors.black,
           onPressed: () => Navigator.of(context).pop(),
         ),
@@ -56,43 +57,43 @@ We may update these terms at any time. Continued use means you accept the update
           style: GoogleFonts.merriweather(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: screenHeight * 0.025,
           ),
         ),
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(screenWidth * 0.04),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSectionTitle("Cancellation Policy"),
-            _buildSectionText(cancellationPolicy),
-            const SizedBox(height: 20),
-            _buildSectionTitle("Terms & Conditions"),
-            _buildSectionText(termsAndConditions),
+            _buildSectionTitle("Cancellation Policy", screenHeight),
+            _buildSectionText(cancellationPolicy, screenHeight),
+            SizedBox(height: screenHeight * 0.02),
+            _buildSectionTitle("Terms & Conditions", screenHeight),
+            _buildSectionText(termsAndConditions, screenHeight),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSectionTitle(String title) {
+  Widget _buildSectionTitle(String title, double screenHeight) {
     return Text(
       title,
       style: GoogleFonts.crimsonText(
-        fontSize: 16,
+        fontSize: screenHeight * 0.022,
         fontWeight: FontWeight.bold,
       ),
     );
   }
 
-  Widget _buildSectionText(String text) {
+  Widget _buildSectionText(String text, double screenHeight) {
     return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
+      padding: EdgeInsets.only(top: screenHeight * 0.01),
       child: Text(
         text,
         style: GoogleFonts.crimsonText(
-          fontSize: 16,
+          fontSize: screenHeight * 0.018,
           fontWeight: FontWeight.normal,
           color: Colors.black.withOpacity(0.5),
         ),

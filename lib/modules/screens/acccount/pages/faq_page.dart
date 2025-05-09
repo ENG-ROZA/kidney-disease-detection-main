@@ -3,8 +3,10 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:graduation_project/widgets/faq_widegt.dart';
 
 class FaqPage extends StatelessWidget {
-  FaqPage({super.key});
   static const String routeName = "FaqPage";
+
+  FaqPage({super.key});
+
   final List<String> faqAnswers = [
     "The app provides highly accurate AI-based analysis but is not a substitute for a doctor. Always consult a professional for confirmation.",
     "The app provides highly accurate AI-based analysis but is not a substitute for a doctor. Always consult a professional for confirmation.",
@@ -13,6 +15,7 @@ class FaqPage extends StatelessWidget {
     "No, the app is not a replacement for a doctor. It provides an initial analysis, but you should consult a medical professional for an accurate diagnosis and treatment.",
     "If the results are unclear or confusing, it's best to consult a doctor or medical professional for a detailed explanation and proper guidance."
   ];
+
   final List<String> faqQuestions = [
     "Can the app accurately diagnose my condition?",
     "How accurate is the app’s diagnosis?",
@@ -24,78 +27,81 @@ class FaqPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
     return Scaffold(
-      backgroundColor:  Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-           surfaceTintColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
         scrolledUnderElevation: 0.0,
         automaticallyImplyLeading: true,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.arrow_back_ios,
-              size: 20,
-            ),
-            color: Colors.black,
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          backgroundColor: Colors.transparent,
-          centerTitle: true,
-          elevation: 0.0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, size: 20),
+          color: Colors.black,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        elevation: 0.0,
         title: Text(
           "FAQ Content",
           style: GoogleFonts.merriweather(
             color: const Color(0xFF000000),
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: screenHeight * 0.025,
           ),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "All FAQs",
-              style: GoogleFonts.merriweather(
-                color: const Color(0xFF000000),
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            Expanded(
-              child: ListView.separated(
-                separatorBuilder: (context, index) => const SizedBox(
-                  height: 15,
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          return Padding(
+            padding: EdgeInsets.all(screenWidth * 0.04),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "All FAQs",
+                  style: GoogleFonts.merriweather(
+                    color: const Color(0xFF000000),
+                    fontWeight: FontWeight.bold,
+                    fontSize: screenHeight * 0.022,
+                  ),
                 ),
-                scrollDirection: Axis.vertical,
-                itemCount: 6,
-                itemBuilder: (context, index) {
-                  return faqWideget(
-                    answerString: Text(
-                      faqAnswers[index],
-                      style: GoogleFonts.crimsonText(
-                          fontSize: 16,
-                          fontWeight: FontWeight.normal,
-                          color: const Color(0xFF000000).withOpacity(0.5)),
-                    ),
-                    questionString: Text(
-                      faqQuestions[index],
-                      style: GoogleFonts.crimsonText(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: const Color(0xFF000000),
-                      ),
-                    ),
-                  );
-                },
-              ),
+                SizedBox(height: screenHeight * 0.01),
+                Expanded(
+                  child: ListView.separated(
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: screenHeight * 0.015),
+                    scrollDirection: Axis.vertical,
+                    itemCount: faqQuestions.length,
+                    itemBuilder: (context, index) {
+                      return faqWideget(
+                        answerString: Text(
+                          faqAnswers[index],
+                          style: GoogleFonts.crimsonText(
+                            fontSize: screenHeight * 0.018,
+                            fontWeight: FontWeight.normal,
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                        ),
+                        questionString: Text(
+                          faqQuestions[index],
+                          style: GoogleFonts.crimsonText(
+                            fontSize: screenHeight * 0.018,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

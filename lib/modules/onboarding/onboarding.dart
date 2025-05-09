@@ -14,6 +14,7 @@ class OnBoardModel {
 
 class OnboardingScreen extends StatefulWidget {
   static const String routeName = "OnBoarding";
+
   const OnboardingScreen({super.key});
 
   @override
@@ -23,37 +24,46 @@ class OnboardingScreen extends StatefulWidget {
 class _OnboardingScreenState extends State<OnboardingScreen> {
   List<OnBoardModel> onboard = [
     OnBoardModel(
-        image: "assets/images/board1.png",
-        title: "Hi, I'm Dr. Reni!",
-        body:
-            " I'm here to help you with AI-Powered CT scan analysis to analyze your kidney. Our advanced model detects potential issues early, giving you actionable insights for proactive care."),
+      image: "assets/images/board1.png",
+      title: "Hi, I'm Dr. Reni!",
+      body:
+          "I'm here to help you with AI-Powered CT scan analysis to analyze your kidney. Our advanced model detects potential issues early, giving you actionable insights for proactive care.",
+    ),
     OnBoardModel(
-        image: "assets/images/board2.png",
-        title: "Hey, I'm Wisely!",
-        body:
-            " Here with you to stay informed with trusted, easy-to-read articles on kidney care, diet tips, and lifestyle adjustments. Updated weekly by medical professionals."),
+      image: "assets/images/board2.png",
+      title: "Hey, I'm Wisely!",
+      body:
+          "Here with you to stay informed with trusted, easy-to-read articles on kidney care, diet tips, and lifestyle adjustments. Updated weekly by medical professionals.",
+    ),
     OnBoardModel(
-        image: "assets/images/board3.png",
-        title: "Hi! my friends",
-        body:
-            "Supportive kidney health community join a thriving community of individuals managing kidney health. Share experiences, ask questions, and find encouragement."),
+      image: "assets/images/board3.png",
+      title: "Hi! my friends",
+      body:
+          "Supportive kidney health community. Join a thriving community of individuals managing kidney health. Share experiences, ask questions, and find encouragement.",
+    ),
     OnBoardModel(
-        image: "assets/images/board4.png",
-        title: "Hi, I’m Carely!",
-        body:
-            " I’ll help you connect with top kidney specialists access verified, top rated doctors specializing in kidney care. You can also explore patients opinions and you can rate your experience."),
+      image: "assets/images/board4.png",
+      title: "Hi, I’m Carely!",
+      body:
+          "I’ll help you connect with top kidney specialists. Access verified, top-rated doctors specializing in kidney care. You can also explore patients' opinions and rate your experience.",
+    ),
     OnBoardModel(
-        image: "assets/images/onboard5.png",
-        title: "Hi, I’m Carely!",
-        body:
-            " I’ll help you calculate eGFR for kidney health to track your kidney function effortlessly. Input your lab results to calculate your eGFR, a key indicator of kidney health, and monitor trends over time"),
+      image: "assets/images/onboard5.png",
+      title: "Hi, I’m Carely!",
+      body:
+          "I’ll help you calculate eGFR for kidney health. Track your kidney function effortlessly. Input your lab results to calculate your eGFR, a key indicator of kidney health, and monitor trends over time.",
+    ),
   ];
+
   var boardController = PageController();
   bool isLast = false;
-  bool isFirst = false;
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
@@ -66,128 +76,142 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 (Route<dynamic> route) => false,
               );
             },
-            child: Text("Skip",
-                style: GoogleFonts.crimsonText(
-                    color: primaryColor,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700)),
+            child: Text(
+              "Skip",
+              style: GoogleFonts.crimsonText(
+                color: primaryColor,
+                fontSize: screenHeight * 0.02,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(11.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: PageView.builder(
-                onPageChanged: (int index) {
-                  if (index == onboard.length - 1) {
-                    setState(() {
-                      isLast = true;
-                      isFirst = false;
-                    });
-                  } else {
-                    setState(() {
-                      isLast = false;
-                      isFirst = true;
-                    });
-                  }
-                },
-                controller: boardController,
-                physics: const BouncingScrollPhysics(),
-                itemBuilder: (context, index) {
-                  return buildOnBoardingWidget(onboard[index], isLast);
-                },
-                itemCount: onboard.length,
-              ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final maxHeight = constraints.maxHeight;
+          final maxWidth = constraints.maxWidth;
+
+          return Padding(
+            padding: EdgeInsets.all(maxWidth * 0.03),
+            child: Column(
+              children: [
+                SizedBox(height: maxHeight * 0.02),
+                Expanded(
+                  child: PageView.builder(
+                    onPageChanged: (index) {
+                      setState(() {
+                        isLast = index == onboard.length - 1;
+                      });
+                    },
+                    controller: boardController,
+                    physics: const BouncingScrollPhysics(),
+                    itemCount: onboard.length,
+                    itemBuilder: (context, index) {
+                      return buildOnBoardingWidget(
+                          onboard[index], isLast, screenHeight, screenWidth);
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget buildOnBoardingWidget(OnBoardModel model, bool isLast) => Padding(
-        padding: const EdgeInsets.all(6.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            SmoothPageIndicator(
-              controller: boardController,
-              count: onboard.length,
-              effect: const ExpandingDotsEffect(
-                dotColor: Color(0xFFF6F6F6),
-                activeDotColor: primaryColor,
-                expansionFactor: 2.5,
-                dotHeight: 10,
-                dotWidth: 12,
-                spacing: 5,
-              ),
+  Widget buildOnBoardingWidget(
+    OnBoardModel model,
+    bool isLast,
+    double screenHeight,
+    double screenWidth,
+  ) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.03),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SmoothPageIndicator(
+            controller: boardController,
+            count: onboard.length,
+            effect: ExpandingDotsEffect(
+              dotColor: const Color(0xFFF6F6F6),
+              activeDotColor: primaryColor,
+              expansionFactor: 2.5,
+              dotHeight: screenHeight * 0.015,
+              dotWidth: screenWidth * 0.03,
+              spacing: screenWidth * 0.01,
             ),
-            const SizedBox(
-              height: 35,
+          ),
+          SizedBox(height: screenHeight * 0.04),
+          Image.asset(
+            model.image,
+            fit: BoxFit.contain,
+            height: screenHeight * 0.3,
+            width: screenWidth * 0.9,
+          ),
+          SizedBox(height: screenHeight * 0.03),
+          Text(
+            model.title,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.merriweather(
+              fontWeight: FontWeight.w700,
+              fontSize: screenHeight * 0.025,
+              color: Colors.black.withOpacity(0.8),
             ),
-            Image.asset(
-              model.image,
-              scale: 4,
+          ),
+          SizedBox(height: screenHeight * 0.02),
+          Text(
+            model.body,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.crimsonText(
+              fontSize: screenHeight * 0.022,
+              fontWeight: FontWeight.w400,
+              color: Colors.black.withOpacity(0.5),
             ),
-            const SizedBox(
-              height: 20,
-            ),
-            Text("  ${model.title} ",
-                style: GoogleFonts.merriweather(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                    color: Colors.black.withOpacity(0.8))),
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                model.body,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.crimsonText(
-                  fontSize: 25.0,
-                  fontWeight: FontWeight.w400,
-                  color: Colors.black.withOpacity(0.5),
-                ),
-              ),
-            ),
-            const Spacer(),
-            SizedBox(
-              width: double.infinity,
-              height: 60,
-              child: FloatingActionButton(
-                backgroundColor: primaryColor,
-                onPressed: () {
-                  if (isLast) {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const LoginScreen()),
-                      (Route<dynamic> route) => false,
-                    );
-                  }
+          ),
+          const Spacer(),
+          SizedBox(
+            width: double.infinity,
+            height: screenHeight * 0.07,
+            child: FloatingActionButton(
+              backgroundColor: primaryColor,
+              onPressed: () {
+                if (isLast) {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const LoginScreen(),
+                    ),
+                    (Route<dynamic> route) => false,
+                  );
+                } else {
                   boardController.nextPage(
-                      duration: const Duration(milliseconds: 750),
-                      curve: Curves.linear);
-                },
-                shape: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30),
-                    borderSide: BorderSide.none),
-                elevation: 0,
-                child: Text(
-                  "Next",
-                  style: GoogleFonts.merriweather(
-                      color: const Color(0xFFFFFFFF),
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold),
+                    duration: const Duration(milliseconds: 750),
+                    curve: Curves.linear,
+                  );
+                }
+              },
+              shape: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(30),
+                borderSide: BorderSide.none,
+              ),
+              elevation: 0,
+              child: Text(
+                "Next",
+                style: GoogleFonts.merriweather(
+                  color: const Color(0xFFFFFFFF),
+                  fontSize: screenHeight * 0.022,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            const SizedBox(
-              height: 25,
-            ),
-          ],
-        ),
-      );
+          ),
+          SizedBox(height: screenHeight * 0.02),
+        ],
+      ),
+    );
+  }
 }

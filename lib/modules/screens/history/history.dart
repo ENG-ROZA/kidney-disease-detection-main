@@ -10,7 +10,12 @@ class History extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final screenHeight = mediaQuery.size.height;
+    final screenWidth = mediaQuery.size.width;
+
     String token = CachedData.getFromCache("token");
+
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.transparent,
@@ -22,7 +27,7 @@ class History extends StatelessWidget {
           style: GoogleFonts.merriweather(
             color: Colors.black,
             fontWeight: FontWeight.bold,
-            fontSize: 20,
+            fontSize: screenHeight * 0.025, // Responsive font size
           ),
         ),
       ),
@@ -40,27 +45,30 @@ class History extends StatelessWidget {
           } else if (snapshot.hasError) {
             return Center(child: Text(snapshot.error.toString()));
           }
+
           final scanResult = snapshot.data?.results ?? [];
           if (scanResult.isEmpty) {
             return Center(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(screenWidth * 0.05),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Image.asset(
                       "assets/images/empty_scan.png",
-                      scale: 5,
+                      fit: BoxFit.contain,
+                      height: screenHeight * 0.25,
+                      width: screenWidth * 0.5,
                     ),
-                    const SizedBox(height: 15),
+                    SizedBox(height: screenHeight * 0.02),
                     Text(
                       textAlign: TextAlign.center,
                       'There is no history yet',
                       style: GoogleFonts.crimsonText(
                         color: Colors.black.withOpacity(0.4),
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: screenHeight * 0.022,
                       ),
                     ),
                   ],
@@ -68,26 +76,28 @@ class History extends StatelessWidget {
               ),
             );
           }
+
           return ListView.separated(
             physics: const BouncingScrollPhysics(),
             itemBuilder: (context, index) => GestureDetector(
               onTap: () {
-                // Navigator.pushNamed(
-                //   context,
-                //   ScanDetails.routeName,
-                //   arguments: scanResult[index].scanId,
-                // );
+                Navigator.pushNamed(
+                  context,
+                  ScanDetails.routeName,
+                  arguments: scanResult[index].scanId,
+                );
               },
               child: buildResultsHistoryWidget(
                 context,
-                dateOfResult: scanResult[index].createdAt.toString(),
                 scanResultImage:
                     scanResult[index].scanFile?.url.toString() ?? "",
+                dateOfResult: scanResult[index].createdAt.toString(),
+                screenHeight: screenHeight,
+                screenWidth: screenWidth,
               ),
             ),
-            separatorBuilder: (context, index) => const SizedBox(
-              height: 5,
-            ),
+            separatorBuilder: (context, index) =>
+                SizedBox(height: screenHeight * 0.01),
             itemCount: scanResult.length,
           );
         },
@@ -95,66 +105,68 @@ class History extends StatelessWidget {
     );
   }
 
-  Widget buildResultsHistoryWidget(BuildContext context,
-      {required String scanResultImage, required String dateOfResult}) {
+  Widget buildResultsHistoryWidget(
+    BuildContext context, {
+    required String scanResultImage,
+    required String dateOfResult,
+    required double screenHeight,
+    required double screenWidth,
+  }) {
     return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Card(
-            color: const Color(0xFFFCFCFC),
-            child: Padding(
-              padding: const EdgeInsets.all(14.0),
-              child: Row(
-                children: [
-                  Container(
-                    height: 50,
-                    width: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10.0),
-                        child: Image.network(
-                          scanResultImage,
-                          fit: BoxFit.cover,
-                        )),
+      padding: EdgeInsets.symmetric(
+        horizontal: screenWidth * 0.04,
+        vertical: screenHeight * 0.01,
+      ),
+      child: Card(
+        color: const Color(0xFFFCFCFC),
+        child: Padding(
+          padding: EdgeInsets.all(screenWidth * 0.03),
+          child: Row(
+            children: [
+              Container(
+                height: screenHeight * 0.08,
+                width: screenWidth * 0.18,
+                decoration: BoxDecoration(
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10.0),
+                  child: Image.network(
+                    scanResultImage,
+                    fit: BoxFit.cover,
                   ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Scan result ${dateOfResult.substring(0, 10)}",
-                        style: GoogleFonts.crimsonText(
-                          color: Colors.black,
-                          fontWeight: FontWeight.w700,
-                          fontSize: 10,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Text(
-                        dateOfResult.substring(0, 10),
-                        style: GoogleFonts.crimsonText(
-                          color: const Color(0xFFADADAD),
-                          fontWeight: FontWeight.w400,
-                          fontSize: 10,
-                        ),
-                      ),
-                    ],
-                  )
-                ],
+                ),
               ),
-            ),
-          )
-        ],
+              SizedBox(width: screenWidth * 0.03),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Scan result ${dateOfResult.substring(0, 10)}",
+                      style: GoogleFonts.crimsonText(
+                        color: Colors.black,
+                        fontWeight: FontWeight.w700,
+                        fontSize: screenHeight * 0.016,
+                      ),
+                    ),
+                    SizedBox(height: screenHeight * 0.005),
+                    Text(
+                      dateOfResult.substring(0, 10),
+                      style: GoogleFonts.crimsonText(
+                        color: const Color(0xFFADADAD),
+                        fontWeight: FontWeight.w400,
+                        fontSize: screenHeight * 0.014,
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
