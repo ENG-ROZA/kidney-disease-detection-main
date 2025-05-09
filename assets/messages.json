@@ -1,0 +1,13 @@
+[
+  {
+    "author": {
+      "id": "bot",
+      "firstName": "Renalyze AI Assistant"
+    },
+    "createdAt": 1698734468000,
+    "id": "welcome-message",
+    "status": "seen",
+    "text": "Hello! I'm Renalyze AI assistant. How can I help you today?",
+    "type": "text"
+  }
+]

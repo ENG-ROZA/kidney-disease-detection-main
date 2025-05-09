@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clean Gradle",
+            "type": "shell",
+            "command": "./gradlew clean",
+            "options": {
+                "cwd": "${workspaceFolder}/android"
+            },
+            "problemMatcher": []
+        }
+    ]
+}
