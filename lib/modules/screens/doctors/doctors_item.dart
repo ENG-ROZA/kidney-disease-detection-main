@@ -35,29 +35,31 @@ Widget doctorsItem(
                 const SizedBox(
                   width: 22.0,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(name,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(name,
+                          style: GoogleFonts.crimsonText(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          )),
+                      Text(
+                        // address.length > 14 ? '${address.substring(0, 14)}...' : address,
+                        address,
+                        textAlign: TextAlign.start,
                         style: GoogleFonts.crimsonText(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        )),
-                    Text(
-                      // address.length > 14 ? '${address.substring(0, 14)}...' : address,
-                      address,
-                    textAlign: TextAlign.start,
-                      style: GoogleFonts.crimsonText(
-                        color: Colors.black.withOpacity(0.5),
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                          color: Colors.black.withOpacity(0.5),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+
+                        overflow: TextOverflow
+                            .ellipsis, //! Note : if the address is too long, it will be truncated with an ellipsis
+                        maxLines: 1,
                       ),
-                      
-                      overflow: TextOverflow
-                          .ellipsis, //! Note : if the address is too long, it will be truncated with an ellipsis
-                      maxLines: 2,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),

@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:graduation_project/layout/home_layout.dart';
 import 'package:graduation_project/layout/provider/app_provider.dart';
 import 'package:graduation_project/modules/auth/forget_password/otp_screen.dart';
@@ -29,6 +30,11 @@ import 'package:graduation_project/shared/network/local/cached_data.dart';
 import 'package:graduation_project/shared/utils/colors.dart';
 import 'package:provider/provider.dart';
 
+import 'feature/comunity_screen/ui/screen/community_screen.dart';
+import 'feature/comunity_screen/ui/screen/create_post_screen.dart';
+import 'feature/comunity_screen/ui/screen/edit_profile.dart';
+import 'feature/comunity_screen/ui/screen/no_network_screen.dart';
+import 'feature/comunity_screen/ui/screen/profile_screen.dart';
 import 'modules/screens/articles/articles_details.dart';
 
 void main() async {
@@ -42,55 +48,66 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: SplashScreen(),
-      debugShowCheckedModeBanner: false,
-      initialRoute: SplashScreen.routeName,
-      theme: ThemeData(
-          scaffoldBackgroundColor: Colors.white,
-          //! These values is a defualt if you don't add a properities for the custom button .
-          textSelectionTheme: TextSelectionThemeData(
-            cursorColor: primaryColor,
-          ),
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              elevation: 0,
-              backgroundColor: primaryColor,
-              minimumSize: const Size(double.infinity, 48),
-              shape: const StadiumBorder(),
-            ),
-          ),
-          appBarTheme: AppBarTheme(
-            backgroundColor: Colors.transparent,
-            centerTitle: true,
-            elevation: 0.0,
-          )),
-      routes: {
-        HomeScreen.routeName: (_) => HomeScreen(),
-        HomeLayout.routeName: (_) => HomeLayout(),
-        OnboardingScreen.routeName: (_) => OnboardingScreen(),
-        Profile.routeName: (_) => Profile(),
-        SplashScreen.routeName: (_) => SplashScreen(),
-     //   ProfilePage.routeName: (_) => ProfilePage(),
-        LoginScreen.routeName: (_) => LoginScreen(),
-        SignupScreen.routeName: (_) => SignupScreen(),
-        OtpScreen.routeName: (_) => OtpScreen(),
-        VerifyEmail.routeName: (_) => VerifyEmail(),
-        ResetPassword.routeName: (_) => ResetPassword(),
-        FaqPage.routeName: (_) => FaqPage(),
-        HelpCenter.routeName: (_) => HelpCenter(),
-        PrivacyPolicy.routeName: (_) => PrivacyPolicy(),
-        Egfr.routeName: (_) => Egfr(),
-        DoctorsScreen.routeName: (_) => DoctorsScreen(),
-        DoctorsDetails.routeName: (_) => DoctorsDetails(),
-        ArticlesScreen.routeName: (_) => ArticlesScreen(),
-        ArticlesDetails.routeName: (_) => ArticlesDetails(),
-        ScanScreen.routeName: (_) => ScanScreen(),
-        UserReviewsScreen.routeName: (_) => UserReviewsScreen(),
-        EditReview.routeName: (_) => EditReview(),
-            ScanDetails.routeName: (_) => ScanDetails(),
-        ChangePassword.routeName: (_) => ChangePassword(),
-      },
-    );
+    return ScreenUtilInit(
+        designSize: const Size(375, 812),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) {
+          return MaterialApp(
+            home: SplashScreen(),
+            debugShowCheckedModeBanner: false,
+            initialRoute: SplashScreen.routeName,
+            theme: ThemeData(
+                scaffoldBackgroundColor: Colors.white,
+                //! These values is a defualt if you don't add a properities for the custom button .
+                textSelectionTheme: TextSelectionThemeData(
+                  cursorColor: primaryColor,
+                ),
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    elevation: 0,
+                    backgroundColor: primaryColor,
+                    minimumSize: const Size(double.infinity, 48),
+                    shape: const StadiumBorder(),
+                  ),
+                ),
+                appBarTheme: AppBarTheme(
+                  backgroundColor: Colors.transparent,
+                  centerTitle: true,
+                  elevation: 0.0,
+                )),
+            routes: {
+              HomeScreen.routeName: (_) => HomeScreen(),
+              HomeLayout.routeName: (_) => HomeLayout(),
+              OnboardingScreen.routeName: (_) => OnboardingScreen(),
+              Profile.routeName: (_) => Profile(),
+              SplashScreen.routeName: (_) => SplashScreen(),
+              //   ProfilePage.routeName: (_) => ProfilePage(),
+              LoginScreen.routeName: (_) => LoginScreen(),
+              SignupScreen.routeName: (_) => SignupScreen(),
+              OtpScreen.routeName: (_) => OtpScreen(),
+              VerifyEmail.routeName: (_) => VerifyEmail(),
+              ResetPassword.routeName: (_) => ResetPassword(),
+              FaqPage.routeName: (_) => FaqPage(),
+              HelpCenter.routeName: (_) => HelpCenter(),
+              PrivacyPolicy.routeName: (_) => PrivacyPolicy(),
+              Egfr.routeName: (_) => Egfr(),
+              DoctorsScreen.routeName: (_) => DoctorsScreen(),
+              DoctorsDetails.routeName: (_) => DoctorsDetails(),
+              ArticlesScreen.routeName: (_) => ArticlesScreen(),
+              ArticlesDetails.routeName: (_) => ArticlesDetails(),
+              ScanScreen.routeName: (_) => ScanScreen(),
+              UserReviewsScreen.routeName: (_) => UserReviewsScreen(),
+              EditReview.routeName: (_) => EditReview(),
+              ScanDetails.routeName: (_) => ScanDetails(),
+              ChangePassword.routeName: (_) => ChangePassword(),
+              CommunityScreen.routeName: (_) => CommunityScreen(),
+              CreatePostScreen.routeName: (_) => CreatePostScreen(),
+              NoNetworkScreen.routeName: (_) => NoNetworkScreen(),
+              ProfileScreen.routeName: (_) => ProfileScreen(),
+              EditProfile.routeName: (_) => EditProfile(),
+            },
+          );
+        });
   }
 }

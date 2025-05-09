@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:graduation_project/feature/comunity_screen/ui/screen/community_screen.dart';
 import 'package:graduation_project/models/doctors_model.dart';
 import 'package:graduation_project/models/top_rated_doctors.dart';
 import 'package:graduation_project/modules/screens/acccount/pages/profile_page.dart';
@@ -62,27 +63,29 @@ class _HomeScreenState extends State<HomeScreen> {
               backgroundImage: NetworkImage(userImage, scale: 6),
             ),
             SizedBox(width: screenWidth * 0.01),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  userName,
-                  style: GoogleFonts.crimsonText(
-                    fontWeight: FontWeight.w700,
-                    fontSize: getResponsiveFontSize(10),
-                    color: Colors.white,
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    userName,
+                    style: GoogleFonts.crimsonText(
+                      fontWeight: FontWeight.w700,
+                      fontSize: getResponsiveFontSize(10),
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-                Text(
-                  userEmail.substring(0, userEmail.indexOf("@")),
-                  style: GoogleFonts.crimsonText(
-                    fontWeight: FontWeight.w400,
-                    fontSize: getResponsiveFontSize(8),
-                    color: const Color(0xFFD2D2D2),
+                  Text(
+                    userEmail.substring(0, userEmail.indexOf("@")),
+                    style: GoogleFonts.crimsonText(
+                      fontWeight: FontWeight.w400,
+                      fontSize: getResponsiveFontSize(8),
+                      color: const Color(0xFFD2D2D2),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         ),
@@ -305,6 +308,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     Expanded(
                       child: GestureDetector(
                         onTap: () {
+                          Navigator.of(context)
+                              .pushNamed(CommunityScreen.routeName);
                           // Navigate To Community
                         },
                         child: kidnyResultWidget(

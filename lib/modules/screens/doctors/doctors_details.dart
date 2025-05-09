@@ -86,10 +86,8 @@ class _DoctorsDetailsState extends State<DoctorsDetails> {
           _getAllReviewsFuture = ApiManager.getAllReviews(doctorId);
         });
       } else {
-        showErrorMessage(
-            context,
-            response?.data?["message"] ??
-                "your review is already exist");
+        showErrorMessage(context,
+            response?.data?["message"] ?? "your review is already exist");
       }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -156,6 +154,12 @@ class _DoctorsDetailsState extends State<DoctorsDetails> {
           }
           final doctor = snapshot.data?.doctor;
           return buildDoctorDetailsWidget(
+            lat:
+                double.tryParse(doctor?.mapLocation!.lat.toString() ?? '0.0') ??
+                    0.0,
+            lng:
+                double.tryParse(doctor?.mapLocation!.lng.toString() ?? '0.0') ??
+                    0.0,
             userDataFuture: userDataFuture(),
             isSubmittingReview: _isSubmittingReview,
             doctorId: doctorId,
